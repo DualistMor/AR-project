@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
-using UnityEngine.Experimental.XR;
+using UnityEngine.XR.ARSubsystems;
 using System;
 
 public class TapToPlaceObject : MonoBehaviour
@@ -11,12 +11,15 @@ public class TapToPlaceObject : MonoBehaviour
     public GameObject placementIndicator;
 
     private ARSessionOrigin origin;
+    private ARRaycastManager raycastManager;
+
     private Pose placementPose;
     private bool placementPoseIsValid = false;
 
     void Start()
     {
         origin = FindObjectOfType<ARSessionOrigin>();
+        raycastManager = FindObjectOfType<ARRaycastManager>();
     }
 
     void Update()
@@ -52,7 +55,7 @@ public class TapToPlaceObject : MonoBehaviour
     {
         var screenCenter = Camera.main.ViewportToScreenPoint(new Vector3(0.5f, 0.5f));
         var hits = new List<ARRaycastHit>();
-        origin.Raycast(screenCenter, hits, TrackableType.Planes);
+        raycastManager.Raycast(screenCenter, hits, TrackableType.Planes);
 
         placementPoseIsValid = hits.Count > 0;
         if (placementPoseIsValid)
